@@ -1,0 +1,2 @@
+USE PINULITO_PDV
+SELECT T2.descripcion,SUM(T2.CANTIDAD) AS cantidad,SUM(T2.TOTAL) as venta FROM tFactura T1 INNER JOIN tFacturaDetalle T2 ON T1.idFactura=T2.idFactura WHERE T2.descripcion LIKE '%VERANO%' AND CONVERT(DATE,FECHAHORA)BETWEEN '2023-03-20' AND '2023-03-26' AND T1.anulada=0 GROUP BY T2.descripcion

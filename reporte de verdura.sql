@@ -1,0 +1,22 @@
+use pinulito_pdv
+SELECT T3.nombre AS EMPRESA, 
+	T2.tda_nombre AS TIENDA, 
+	ISNULL(T1.cantCebolla,0) AS CANTIDAD_CEBOLLA,
+	ISNULL(T1.precioCebolla,0) AS PRECIO_CEBOLLA,
+	ISNULL(T1.cantLechuga,0) AS CANTIDAD_LECHUGA,
+	ISNULL(T1.precioLechuga,0) AS PRECIO_LECHUGA,
+	ISNULL(T1.cantPimiento,0) AS CANTIDAD_PIMIENTO,
+	ISNULL(T1.precioPimiento,0) AS PRECIO_PIMIENTO,
+	ISNULL(T1.cantRepollo,0) AS CANTIDAD_REPOLLO,
+	ISNULL(T1.precioRepollo,0) AS PRECIO_REPOLLO,
+	ISNULL(T1.cantZanahoria,0) AS CANTIDAD_ZANAHORIA,
+	ISNULL(T1.precioZanahoria,0) AS PRECIO_ZANAHORIA,
+	ISNULL(T1.cantOtros,0) AS CANTIDAD_OTROS,
+	ISNULL(T1.precioOtros,0) AS PRECIO_OTROS,
+	total AS TOTAL
+	FROM TINGRESOVERDURA T1 
+	INNER JOIN tTienda T2 ON T1.empresa=T2.empresa AND T1.tienda=T2.tienda
+	INNER JOIN tEmpresa T3 ON T1.empresa=T3.empresa 
+	WHERE fechaCompra BETWEEN '2023-04-01' AND '2023-04-25'
+
+
