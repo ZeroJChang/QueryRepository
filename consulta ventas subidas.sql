@@ -1,31 +1,34 @@
-WITH recursive_hijos AS (
-  SELECT idProyecto, idPadre, descripcion, esTarea, situacion, estatus
-  FROM tProyecto
-  WHERE idProyecto = 4
-  UNION ALL
-  SELECT t.idProyecto, t.idPadre, t.descripcion, t.esTarea, t.situacion, t.estatus
-  FROM tProyecto t
-  INNER JOIN recursive_hijos rh ON t.idPadre = rh.idProyecto
-)
-SELECT *
-FROM recursive_hijos
-WHERE idProyecto <> 4;
+SELECT SUM(DocTotal)/1.12 FROM OINV WHERE 
+DocDate = '2023-01-10' AND
+CArdCode COLLATE DATABASE_DEFAULT in (
+    SELECT clienteSAP FROM PINULITO_PDV..tTienda
+) AND CANCELED = 'N'
 
+ 
 
-SELECT *, CONVERT(varchar, fechaSiguiente, 103) as fechaS  FROM tAnexoRespuesta where idAnexo=$idAnexo and empresa = $empresa and tienda = $tienda
-SELECT * FROM TPROYE
+ 
 
+SELECT * FROM OINV WHERE 
+DocDate = '2023-01-13' AND
+CArdCode COLLATE DATABASE_DEFAULT in (
+    SELECT clienteSAP FROM PINULITO_PDV..tTienda
+) AND CANCELED = 'N'
 
+ 
 
-WITH recursive_hijos AS (
-  SELECT idAnexo, idPadre, nombre, permiteResp, recurrente, vigente
-  FROM tanexo
-  WHERE idAnexo = 1
-  UNION ALL
-  SELECT t.idAnexo, t.idPadre, t.nombre, t.permiteResp, t.recurrente, t.vigente
-  FROM tanexo t
-  INNER JOIN recursive_hijos rh ON t.idPadre = rh.idAnexo
-)
-SELECT *
-FROM recursive_hijos
-WHERE idAnexo <> 1;
+ 
+
+SELECT t0.total, t2.DocTotal, t0.total - t2.DocTotal ,* FROM PINULITO_PDV..tFacturacionInfile t0
+LEFT OUTER JOIN PINULITO_PDV..tTienda t1 ON t0.empresa = t1.empresa AND t0.tienda = t1.tienda
+LEFT OUTER JOIN OINV t2 ON t1.clienteSAP COLLATE DATABASE_DEFAULT = t2.CardCode AND t0.fecha = t2.DocDate
+WHERE t0.empresa = '00003' AND t0.fecha = '2023-01-10'  AND (( t2.CANCELED = 'N' AND ABS(t0.total - t2.DocTotal) != 0) OR t2.DocNum is null)
+
+SELECT DocEntry,  ItemCode, Dscription, SUM(Quantity) as cantidad, SUM(Price), TaxCode, AcctCode FROM INV1 WHERE DocEntry in (
+    SELECT DocEntry FROM OINV WHERE 
+DocDate = '2023-01-10' AND --AcctCode != '4110101' AND
+CArdCode COLLATE DATABASE_DEFAULT in (
+    SELECT clienteSAP FROM PINULITO_PDV..tTienda
+) AND Canceled = 'N'
+) 
+GROUP BY ItemCode, Dscription, TaxCode, AcctCode, DocEntry
+ORDER BY SUM(Price)
